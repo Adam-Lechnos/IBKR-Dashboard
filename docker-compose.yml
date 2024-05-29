@@ -1,0 +1,52 @@
+version: "3"
+
+services:
+  ibeam:
+    # image: voyz/ibeam
+    image: ibeam_test
+    container_name: ibeam
+    env_file:
+    - env.list
+    ports:
+      - 5000:5000
+      - 5001:5001
+    network_mode: bridge # Required due to clientportal.gw IP restrictions
+    restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
+    volumes:
+      - util-data:/srv/ibeam/util-data
+  # test-client:
+  #   # image: voyz/ibeam
+  #   image: nginx
+  #   container_name: test-client
+  #   network_mode: bridge # Required due to clientportal.gw IP restrictions
+  #   restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
+  #   volumes:
+  #     - util-data:/var/ibkr/util-data
+  ibkr-create-website:
+  # image: voyz/ibeam
+    depends_on:
+      - ibeam
+    image: adamlechnos/ibkr-create-website
+    container_name: ibkr-api-parser
+    network_mode: bridge # Required due to clientportal.gw IP restrictions
+    restart: unless-stopped # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
+    volumes:
+      - util-data:/var/ibkr/util-data
+      - web-data:/usr/src/app/webserver
+  ibkr-dashboard:
+  # image: voyz/ibeam
+    depends_on:
+      - ibkr-create-website
+    image: adamlechnos/ibkr-dashboard
+    container_name: ibkr-dashboard
+    ports:
+      - 8081:8081
+    network_mode: bridge # Required due to clientportal.gw IP restrictions
+    restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
+    volumes:
+      - util-data:/var/ibkr/util-data
+      - web-data:/usr/src/app/webserver
+
+volumes:
+  util-data:
+  web-data:
