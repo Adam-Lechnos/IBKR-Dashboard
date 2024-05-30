@@ -10,12 +10,16 @@ requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.
 
 # If first argument is present, honor it as time in seconds to re-execute the function, otherwise default to every 1800 seconds (30 minutes)
 # Maximum honored first argument is 86400 seconds (1 day)
-try:
-    if int(sys.argv[1])>0:
-        sleepTimeSeconds=min(int(sys.argv[1]), 86400)
-except: 
-        sleepTimeSeconds=1800
+# try:
+#     if int(sys.argv[1])>0:
+#         sleepTimeSeconds=min(int(sys.argv[1]), 86400)
+# except: 
+#         sleepTimeSeconds=1800
 
+sleepTimeSeconds = int(os.environ.get('sleepTimeSeconds'))
+if sleepTimeSeconds == None: sleepTimeSeconds = 60
+# if 'sleepTimeSeconds' not in globals(): sleepTimeSeconds = 60
+# set webpage refresh time by extra seconds passed program refresh interval
 refreshPageSeconds=sleepTimeSeconds+5
 
 # Parse IP from ip-addr.txt within the IBeam container via shared volume mount
@@ -25,10 +29,11 @@ try:
 except:
     print(f"Unable to locate '/var/ibkr/util-data/ip-addr.txt' in shared volume mount for IBeam container IP", file=sys.stderr)
 
-columnDataRisk = ['RISK DATA']
-columnDataPos = []
+
 
 def parseAPICreateWebFiles():
+    columnDataRisk = ['RISK DATA']
+    columnDataPos = []
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex((f'{IBeam}',5000))
     if result == 0:
@@ -50,7 +55,7 @@ def parseAPICreateWebFiles():
     columnDataCsv = open("./webserver/static/IBKR_Data_temp.csv", "w", newline='')
     wr = csv.writer(columnDataCsv, quoting=csv.QUOTE_ALL)
     f = open("./webserver/static/index_temp.html", "w"); fileList.append("./webserver/static/index_temp.html")
-    f.write(f'<html> <head> <title>IBKR Dashboard</title> <link rel="shortcut icon" href="/favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}" /> </head> <body>')
+    f.write(f'<html> <head> <title>IBKR Dashboard</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
     f.write("<pre>")
     f.write('<img src="./images/interactive-brokers.svg" alt="Interactive Brokers" border="0" loading="lazy" width="200" height="40" />')
     f.write('<br><br><hr>')
@@ -63,7 +68,7 @@ def parseAPICreateWebFiles():
         accountName=data[i]['accountAlias']
         filenameRisk=accountName.replace(" ","-")
         fRisk = open(f"./webserver/static/Risk-{filenameRisk}_temp.html", "w"); fileList.append(f"./webserver/static/Risk-{filenameRisk}_temp.html")
-        fRisk.write(f'<html> <head> <title>IBKR Dashboard: Margin Risk: {accountName}</title> <link rel="shortcut icon" href="/favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}" /> </head> <body>')
+        fRisk.write(f'<html> <head> <title>IBKR Dashboard: Margin Risk: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
         fRisk.write('<pre>')
         accountId='************'+accountId[-2:]
         f.write(f'<h4>Account Name: {accountName}, Account ID: {accountId}</h4>')
@@ -173,7 +178,7 @@ def parseAPICreateWebFiles():
         f.write(f'<a href="./Pos-{filenamePos}.html">{accountName}</a>\n')
         fPos = open(f"./webserver/static/Pos-{filenamePos}_temp.html", "w"); fileList.append(f"./webserver/static/Pos-{filenamePos}_temp.html")
         fPosBuf = open(f"./webserver/static/PosBuf-{filenamePos}.html", "w")
-        fPos.write(f'<html> <head> <title>IBKR Dashboard: Current Positions: {accountName}</title> <link rel="shortcut icon" href="/favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}" /> </head> <body>')
+        fPos.write(f'<html> <head> <title>IBKR Dashboard: Current Positions: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
         fPos.write('<pre>')
         fPos.write(f'<h4>Current Positions | Account Name: {accountName}, Account ID: {accountId} | Last Updated: {today}</h4>')
         fPos.write('<a href="./">Dashboard</a>\n\n')
@@ -250,7 +255,7 @@ def parseAPICreateWebFiles():
     f.write(f'{"Grand Total Realized PnL: $":>29s} <font color="{grandTotalPLCol}">{grandTotalPL:>15.2f}</font>')
     f.write("</b><br><br><hr>")
     # f.write('\n<a href="./IBKR_Data.csv">[Download CSV Data]</a>')
-    f.write(f'\n<center><small>Last Updated: {today} | Parser Re-run Time: {sleepTimeSeconds} seconds | Page Auto Refresh Time: {refreshPageSeconds} seconds | <a href="./IBKR_Data.csv">[Download CSV Data]</a></small></center>')
+    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Time: {sleepTimeSeconds} seconds | Page Auto Refresh Time: {refreshPageSeconds} seconds | <a href="./IBKR_Data.csv">[Download CSV Data]</a></small></center>')
     f.write("\n</pre> </body> </html>")
     f.close()
     wr.writerow('')
@@ -275,6 +280,7 @@ def parseAPICreateWebFiles():
 # call function every set number of seconds
 while True:
     parseAPICreateWebFiles()
+    print(f'sleep time interval set to {sleepTimeSeconds}')
     for i in range(sleepTimeSeconds,0,-1):
         print(f'Sleeping for {sleepTimeSeconds} seconds.. Press CTRL+C to end: {i:<10d}', end="\r")
         time.sleep(1)
