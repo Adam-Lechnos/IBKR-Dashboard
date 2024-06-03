@@ -1,5 +1,10 @@
 import os
 from flask import Flask, send_from_directory
+import ssl
+
+context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+context.load_cert_chain('server.crt','server.key')
+
 
 app = Flask(__name__)
 
@@ -35,4 +40,4 @@ def routes(path):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=2053)
+    app.run(debug=True, host='0.0.0.0', port=2053, ssl_context=context)
