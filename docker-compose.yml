@@ -42,7 +42,7 @@ services:
     env_file:
       - env.list.dashboard
     ports:
-      - 2053:2053
+      - 8080:8080
     network_mode: bridge # Required due to clientportal.gw IP restrictions
     restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
     volumes:
