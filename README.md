@@ -2,12 +2,12 @@
 Docker Compose for creating a IBKR Dashboard which includes risk data and current positions
 
 # Containers
-Consists of three containers
-* [ibeam](https://github.com/Voyz/ibeam) - With some modifications for a headless API Gateway enabling authenticating to Interactive Brokers Web API
+Consists of fouse containers
+* [ibeam](https://github.com/Voyz/ibeam) - With some modifications for inter-pod discovery; a headless API Gateway enabling authenticating to Interactive Brokers Web API
   * Created by [Voyz](https://github.com/Voyz) with modifications made by me for service discovery across external containers
-* ibkr-api-parser - Parses the IBKR API and returns to formatted html
-* ibkr-dashboard - A web interface consisting of the risk and position data
-* ibkr-push-gdrive - Pushes the updated and downloadable dashboard CSV data into Google Drive as a Google Sheet.
+* ibkr-api-parser - Parses the IBKR API and returns to formatted html on a recurring cadence
+* ibkr-dashboard - A web interface consisting of the risk and position data within the html data
+* ibkr-push-gdrive - Pushes the updated and downloadable dashboard CSV data into Google Drive as a Google Sheet on a recurring cadence.
 
 # Pre-requisites
 * Python3
