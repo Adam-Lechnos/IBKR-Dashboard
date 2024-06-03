@@ -11,12 +11,11 @@ Consists of three containers
 
 # Pre-requisites
 * Python3
-* Python PIP
-* Docker
-* [Docker Compose](https://docs.docker.com/compose/install/linux/#install-using-the-repository)
+* Python3 pip
+* [Docker Engine](https://docs.docker.com/engine/install/)
 * Google Account and target Google Drive Folder ID
   * Embedded within the browser's URL at the target folder, usually after `../folder/..` string.
-* Install requirements.txt by executing within the git folder `pip3 -r requirements.txt`
+* Install `requirements.txt` by executing within the git folder `pip3 -r requirements.txt`
 * [Docker Compose Environment Files](#docker-compose-environment-files)
 * [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-With-enable-apis)
 
