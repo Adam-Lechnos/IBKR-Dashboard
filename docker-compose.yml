@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   ibeam:
     # image: voyz/ibeam
@@ -41,6 +39,8 @@ services:
       - ibkr-create-website
     image: adamlechnos/ibkr-dashboard
     container_name: ibkr-dashboard
+    env_file:
+      - env.list.dashboard
     ports:
       - 2053:2053
     network_mode: bridge # Required due to clientportal.gw IP restrictions
