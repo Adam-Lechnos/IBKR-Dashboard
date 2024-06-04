@@ -14,7 +14,7 @@ Consists of fouse containers
 * Python3 pip
 * [Docker Engine](https://docs.docker.com/engine/install/)
 * Google Account and target Google Drive Folder ID
-  * Embedded within the browser's URL at the target folder, usually after `../folder/..` string.
+  * Embedded within the browser's URL when at the target folder usually after the `/folder/` string.
 * Install `requirements.txt` by executing within the git folder `pip3 -r requirements.txt`
 * [Docker Compose Environment Files](#docker-compose-environment-files)
 * [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-With-enable-apis)
