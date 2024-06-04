@@ -227,7 +227,7 @@ def parseAPICreateWebFiles():
             fPosBuf.write('\n')
             fPosBuf.write(f'| {"Contract: ":<10s}{contractDes:<45s} | {"Position: ":<10s}{position:>12.5f} | {"Put/Call: ":<8s} <font color="{putOrCallCol}">{putOrCall}</font> | {"Strike: $":<9s} <font color="{strikeCol}">{strike:>12.2f}</font> | {"Market Price: $":<17s}{marketPrice:>15.2f} | {"Market Value: $":<17s} <font color="{positionValCol}">{positionVal:>15.2f}</font> | {"Unrealized PnL: $":<17s} <font color="{UPnLCol}">{unrealizedPnL:>15.2f}</font> | {"Realized PnL: $":<17s} <font color="{PnLCol}">{realizedPnL:>15.2f}</font> | {"Asset Class: ":<12s} <font color="{assetClassCol}">{assetClass:>5s}</font> | {"Contract ID: ":<13s}{contractID:<10d} |')
             fPosBuf.write('\n')
-            columnDataPos.append({contractDes:position,'Asset Class':assetClass,'Market Value':positionVal}) 
+            columnDataPos.append(f"ConDes:{contractDes},Pos:{position},MktVal:{positionVal},AsstCls:{assetClass},Strk:{strike},PutCall:{putOrCall},UnRlPnL:{unrealizedPnL},ConId:{contractID}") 
         f.write('-'*318)
         fPosBuf.write('-'*318)
         wr.writerow(columnDataPos)
