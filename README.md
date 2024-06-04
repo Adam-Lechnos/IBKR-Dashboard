@@ -18,6 +18,7 @@ Consists of fouse containers
 * Install `requirements.txt` by executing within the git folder `pip3 -r requirements.txt`
 * [Docker Compose Environment Files](#docker-compose-environment-files)
 * [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-With-enable-apis)
+  * And the subsequent `client_secrets.json` containing the `client_secret` and `client_id` for use by the [pydrive.auth](https://pythonhosted.org/PyDrive/oauth.html) library.
 
 # Docker Compose Environment Files
 Create the following Docker Compose environment files at the root of the git repo
