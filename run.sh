@@ -44,4 +44,4 @@ else
     echo "Token file already exists, proceeding"
 fi
 
-docker compose up -d
+docker compose pull && docker compose up -d

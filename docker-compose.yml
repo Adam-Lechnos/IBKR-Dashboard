@@ -42,17 +42,17 @@ services:
     env_file:
       - env.list.dashboard
     ports:
-      - 8080:8080
+      - 8443:8443
     network_mode: bridge # Required due to clientportal.gw IP restrictions
     restart: 'no' # Prevents IBEAM_MAX_FAILED_AUTH from being exceeded
     volumes:
       # Uncomment below to specify TLS cert/key files
-      # - type: bind
-      #   source: ./server.crt
-      #   target: /usr/src/app/server.crt
-      # - type: bind
-      #   source: ./server.key
-      #   target: /usr/src/app/server.key
+      - type: bind
+        source: ./server.crt
+        target: /usr/src/app/server.crt
+      - type: bind
+        source: ./server.key
+        target: /usr/src/app/server.key
       - util-data:/var/ibkr/util-data
       - web-data:/usr/src/app/webserver
   ibkr-push-gdrive:
