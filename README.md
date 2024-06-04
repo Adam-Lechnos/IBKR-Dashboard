@@ -1,6 +1,8 @@
 # IBKR-Dashboard
 Docker Compose for creating a IBKR Dashboard which includes risk data and current positions
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![GitHub Release](https://img.shields.io/github/release/tterb/PlayMusic.svg?style=flat)]() 
+
 # Containers
 Consists of fouse containers
 * [ibeam](https://github.com/Voyz/ibeam) - With some modifications for inter-pod discovery; a headless API Gateway enabling authenticating to Interactive Brokers Web API
@@ -54,7 +56,7 @@ Create the following Docker Compose environment files at the root of the git rep
   useTLS=no
   webPort=8443
   ```
-  * `useTLS` may set to `yes` for enabling TLS. Place the key and certificate files within the root of the git repo with file names `server.key` and `server.crt` respectively   
+  * `useTLS` may set to `yes` for enabling TLS. Place the key and certificate files within the root of the git repo with file names `server.key` and gh r`server.crt` respectively   
     * Uncomment the `docker-compose.yml` under the commented line `# Uncomment below to specify TLS cert/key files`
   * `webPort` may set to any other port. Change the port number in `docker-compose.yml` to the same value as the new webPort number under the `ibkr-dashboard` service
 
