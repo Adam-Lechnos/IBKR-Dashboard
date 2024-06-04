@@ -12,7 +12,7 @@ Consists of fouse containers
 # Pre-requisites
 * Python3
 * Python3 pip
-* [Docker Engine](https://docs.docker.com/engine/install/){:target="_blank" rel="noopener"}
+* [Docker Engine](https://docs.docker.com/engine/install/)
 * Google Account and target Google Drive Folder ID
   * Embedded within the browser's URL at the target folder, usually after `../folder/..` string.
 * Install `requirements.txt` by executing within the git folder `pip3 -r requirements.txt`
