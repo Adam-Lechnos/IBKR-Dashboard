@@ -255,7 +255,7 @@ def parseAPICreateWebFiles():
     f.write(f'{"Grand Total Realized PnL: $":>29s} <font color="{grandTotalPLCol}">{grandTotalPL:>15.2f}</font>')
     f.write("</b><br><br><hr>")
     # f.write('\n<a href="./IBKR_Data.csv">[Download CSV Data]</a>')
-    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Time: {sleepTimeSeconds} seconds | Page Auto Refresh Time: {refreshPageSeconds} seconds | <a href="./IBKR_Data.csv">[Download CSV Data]</a></small></center>')
+    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Interval: {sleepTimeSeconds} seconds | Page Auto Refresh Interval: {refreshPageSeconds} seconds | <a href="./IBKR_Data.csv">[Download CSV Data]</a> | <a href="https://www.interactivebrokers.com/en/software/systemStatus.php" target="_blank" rel="noopener noreferrer">[System Status]</a></small></center>')
     f.write("\n</pre> </body> </html>")
     f.close()
     wr.writerow('')
