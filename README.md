@@ -37,8 +37,10 @@ Create the following Docker Compose environment files at the root of the git rep
   ```
   folderId=Google_Drive_Folder_ID
   refreshPushSeconds=60
+  csvFileName=IBKR_Data
   ```
   * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive
+  * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.parser` env file. Defaults to `IBKR_Data`
 * env.list.ibeam
   ```
   IBEAM_ACCOUNT=ibkr_username
@@ -49,9 +51,11 @@ Create the following Docker Compose environment files at the root of the git rep
 * env.list.parser
   ```
   sleepTimeSeconds=60
+  csvFileName=IBKR_Data
   ```
   * `sleepTimeSeconds` may set to the desired API parser re-run interval.
     * The pre-formatted HTML refresh interval will always be set to 5 seconds longer than this value.
+  * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.gdrive` env file. Defaults to `IBKR_Data`
 * env.list.dashboard
   ```
   useTLS=no

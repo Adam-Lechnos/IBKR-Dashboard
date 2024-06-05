@@ -17,7 +17,9 @@ requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.
 #         sleepTimeSeconds=1800
 
 sleepTimeSeconds = int(os.environ.get('sleepTimeSeconds'))
+csvFileName = os.environ.get('csvFileName')
 if sleepTimeSeconds == None: sleepTimeSeconds = 60
+if csvFileName == None: csvFileName = 'IBKR_Data'
 # if 'sleepTimeSeconds' not in globals(): sleepTimeSeconds = 60
 # set webpage refresh time by extra seconds passed program refresh interval
 refreshPageSeconds=sleepTimeSeconds+5
@@ -52,7 +54,7 @@ def parseAPICreateWebFiles():
     if response.status_code != 200: print(f'Connection to IBKR API for Main Data did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
     data=response.json()
     
-    columnDataCsv = open("./webserver/static/IBKR_Data_temp.csv", "w", newline='')
+    columnDataCsv = open(f"./webserver/static/{csvFileName}_temp.csv", "w", newline='')
     wr = csv.writer(columnDataCsv, quoting=csv.QUOTE_ALL)
     f = open("./webserver/static/index_temp.html", "w"); fileList.append("./webserver/static/index_temp.html")
     f.write(f'<html> <head> <title>IBKR Dashboard</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
@@ -255,7 +257,7 @@ def parseAPICreateWebFiles():
     f.write(f'{"Grand Total Realized PnL: $":>29s} <font color="{grandTotalPLCol}">{grandTotalPL:>15.2f}</font>')
     f.write("</b><br><br><hr>")
     # f.write('\n<a href="./IBKR_Data.csv">[Download CSV Data]</a>')
-    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Interval: {sleepTimeSeconds} seconds | Page Auto Refresh Interval: {refreshPageSeconds} seconds | <a href="./IBKR_Data.csv">[Download CSV Data]</a> | <a href="https://www.interactivebrokers.com/en/software/systemStatus.php" target="_blank" rel="noopener noreferrer">[System Status]</a></small></center>')
+    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Interval: {sleepTimeSeconds} seconds | Page Auto Refresh Interval: {refreshPageSeconds} seconds | <a href="./{csvFileName}.csv">[Download CSV Data]</a> | <a href="https://www.interactivebrokers.com/en/software/systemStatus.php" target="_blank" rel="noopener noreferrer">[System Status]</a></small></center>')
     f.write("\n</pre> </body> </html>")
     f.close()
     wr.writerow('')
@@ -270,7 +272,7 @@ def parseAPICreateWebFiles():
     #     wr.writerow(columnDataPos)
     #     wr.writerow('')
     #     wr.writerow([f"Last Updated: {today}"])
-    fileList.append("./webserver/static/IBKR_Data_temp.csv")
+    fileList.append(f"./webserver/static/{csvFileName}_temp.csv")
 
     # rename all temp webpage files for URL referencing including default index.html
     for source in fileList:

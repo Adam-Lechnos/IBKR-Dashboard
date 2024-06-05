@@ -4,7 +4,9 @@ import time
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 
-folderId=os.environ.get('folderId')
+folderId= os.environ.get('folderId')
+csvFileName = os.environ.get('csvFileName')
+if csvFileName == None: csvFileName = 'IBKR_Data'
 
 # folderId="0B4wSVIZCga2IVElQNHZqWEVEQ1k"
 gauth = GoogleAuth()
@@ -31,22 +33,23 @@ except:
 
 
 def pushToGdrive(folderId):
-    testCSV = os.path.isfile('/usr/src/app/webserver/static/IBKR_Data.csv')
-    if not testCSV: print(f"File not found, '/usr/src/app/webserver/IBKR_Data.csv', retrying in {sleepTimeSeconds}", file=sys.stderr); return
+    testCSV = os.path.isfile(f'/usr/src/app/webserver/static/{csvFileName}.csv')
+    if not testCSV: print(f"File not found, '/usr/src/app/webserver/{csvFileName}.csv', retrying in {sleepTimeSeconds}", file=sys.stderr); return
     testCS = os.path.isfile('/usr/src/app/client_secrets.json')
     if not testCS: print(f"File not found, '/usr/src/app/client_secrets.json', retrying in {sleepTimeSeconds}", file=sys.stderr); return
+    if folderId == None: print(f"'FolderId' must be specified in environment file, retrying in {sleepTimeSeconds}", file=sys.stderr); return
     drive=GoogleDrive(gauth)
     try:
-        file_list = drive.ListFile({'q':"'"+folderId+"' in parents and title='IBKR_Data' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false"}).GetList()
+        file_list = drive.ListFile({'q':"'"+folderId+"' in parents and title='"+csvFileName+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false"}).GetList()
         file_id=file_list[0]['id']
         csvUpdate = drive.CreateFile({'id':file_id})
-        csvUpdate.SetContentFile('/usr/src/app/webserver/static/IBKR_Data.csv')
+        csvUpdate.SetContentFile(f'/usr/src/app/webserver/static/{csvFileName}.csv')
         csvUpdate.Upload({'convert':True})
         print(f"File update successful on File ID: {file_id}")
     except:
-        print("'IBKR_Data.csv' not found, creating..")
-        csvFile = drive.CreateFile({'title':'IBKR_Data', 'parents':[{'id': f'{folderId}'}]})
-        csvFile.SetContentFile('/usr/src/app/webserver/static/IBKR_Data.csv')
+        print(f"'{csvFileName}.csv' not found, creating..")
+        csvFile = drive.CreateFile({'title':f'{csvFileName}', 'parents':[{'id': f'{folderId}'}]})
+        csvFile.SetContentFile(f'/usr/src/app/webserver/static/{csvFileName}.csv')
         csvFile.Upload({'convert':True})
         file_id=csvFile['id']
         print(f"File creation successful. File ID: {file_id}")
