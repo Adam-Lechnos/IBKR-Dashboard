@@ -26,9 +26,26 @@ The containers are made public within Docker Hub
 * Google Account and target Google Drive Folder ID
   * Embedded within the browser's URL when at the target folder usually after the `/folder/` string.
 * Install `requirements.txt` by executing within the git folder `pip3 -r requirements.txt`
+* [Generate Encrypted IBKR Password and Key Pair](#generate-encrypted-ibkr-password-and-key-pair)
 * [Docker Compose Environment Files](#docker-compose-environment-files)
-* [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-With-enable-apis)
+* [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-with-enabled-apis)
   * And the subsequent `client_secrets.json` containing the `client_secret` and `client_id` for use by the [pydrive.auth](https://pythonhosted.org/PyDrive/oauth.html) library.
+
+# Generate Encrypted IBKR Password and Key Pair
+Encrypt your IBKR password and store the encryped password and key within the `env.list.ibeam` when creating the [Docker Compose Environment Files](#docker-compose-environment-files)
+
+* Create a file named `gen_key_pw.py`
+* Add the following to the file, replacing `'password'` with your IBKR password. (this file is part of `.gitignore`)
+  ``` python
+  from cryptography.fernet import Fernet
+
+  key = Fernet.generate_key()
+  f = Fernet(key)
+  password = f.encrypt(b'password')
+  print(f'IBEAM_PASSWORD={password}, IBEAM_KEY={key}')
+  ```
+* Execute the file via the command `python3 gen_key_pw.py`. Make not of the printed encrypted password and key, excluding the `b` in front of each string.
+* Remove the password from the `gen_key_pw.py` file
 
 # Docker Compose Environment Files
 Create the following Docker Compose environment files at the root of the git repo
@@ -65,5 +82,5 @@ Create the following Docker Compose environment files at the root of the git rep
     * Uncomment the `docker-compose.yml` under the commented line `# Uncomment below to specify TLS cert/key files`
   * `webPort` may set to any other port. Change the port number in `docker-compose.yml` to the same value as the new webPort number under the `ibkr-dashboard` service
 
-# Google Cloud OAuth With Enable APIs
+# Google Cloud OAuth With Enabled APIs
 Enable Google Cloud OAuth flow by creating a project in Google Console, enabling the Google Drive APIs, then downloading the OAuth `client_secrets.json` for OAuth command authorization flow for container permissions to Google Drive.
