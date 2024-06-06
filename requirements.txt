@@ -1,2 +1,4 @@
 pydrive
 pyopenssl
+datetime
+pytz

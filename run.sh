@@ -41,7 +41,7 @@ if [ ! -f ./mycreds.txt ]; then
     echo "Auth did not succeed, exting"
     exit 1
 else
-    echo "Token file already exists, proceeding"
+    echo "Token file exists, proceeding"
 fi
 
 docker compose pull && docker compose up -d
