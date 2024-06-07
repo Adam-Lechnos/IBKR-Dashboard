@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# entry point for starting the ibkr-dashboard
+
 if [ ! -f ./env.list.ibeam ]; then
     echo "IBeam 'env.list.ibeam' environment file missing. Generate an encrypted password and key using 'gen_key_pw.py' then add to env.list.ibeam file."
     echo """Example:
