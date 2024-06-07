@@ -1,14 +1,11 @@
 import json
-import datetime
-import pytz
-import re
 import os
+import requests
 from pydrive.auth import GoogleAuth
 
 def checkCreds():
-    today = datetime.datetime.now(pytz.timezone('UTC')).strftime("%Y%m%d%H%M%S")
 
-    if os.path.exists("demofile.txt"):
+    if os.path.exists("mycreds.txt"):
         with open('mycreds.txt') as f:
             # Read the contents of the file
             text = f.read()
@@ -16,13 +13,13 @@ def checkCreds():
     else:
         print("Google OAuth token not found, re-authentication required..")
         return
-
-    tokenExpiry = credsData['token_expiry']
-    tokenExpiry = re.sub("[^0-9]", "", tokenExpiry)
-    difference = int(tokenExpiry[:-6])-int(currDate[:-6])
-    print(difference)
-    if difference < 2:
-        print("Google OAuth token close to expiry, re-authentication required..")
+    
+    accessToken=credsData['access_token']
+    r = requests.get(f"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}")
+    difference=round(float(r.json()['expires_in'])/60/60,2)
+    print(f'Access Token exiration in hours: {difference}')
+    if difference < .10:
+        print(f"Google OAuth access token expiry in less than hours specified: {difference}, re-authentication required via OAuth flow..")
         os.remove("mycreds.txt")
 
 

@@ -1,4 +1,3 @@
 pydrive
 pyopenssl
-datetime
-pytz
+requests

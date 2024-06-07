@@ -159,6 +159,7 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 gen_key_pw.py
+test.py
 env.list*
 mycreds.txt
 client_secrets.json
