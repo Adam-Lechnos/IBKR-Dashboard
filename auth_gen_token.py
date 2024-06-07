@@ -3,6 +3,8 @@ import os
 import requests
 from pydrive.auth import GoogleAuth
 
+tokenExpirationThreshold=.10
+
 def checkCreds():
 
     if os.path.exists("mycreds.txt"):
@@ -14,16 +16,22 @@ def checkCreds():
         print("Google OAuth token not found, re-authentication required..")
         return
     
-    accessToken=credsData['access_token']
-    r = requests.get(f"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}")
-    difference=round(float(r.json()['expires_in'])/60/60,2)
-    print(f'Access Token exiration in hours: {difference}')
-    if difference < .10:
-        print(f"Google OAuth access token expiry in less than hours specified: {difference}, re-authentication required via OAuth flow..")
+    try:
+        accessToken=credsData['access_token']
+        r = requests.get(f"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}")
+        difference=round(float(r.json()['expires_in'])/60/60,2)
+    except:
+        print("token file 'mycreds.txt' missing keys per lookup values 'accessToken' or 'expires_in', re-authentication required..")
+        os.remove("mycreds.txt")
+        return
+
+    print(f'Access Token expiration in hours: {difference}. Force re-auth within threshold: {tokenExpirationThreshold:.2f} hours')
+    if difference < tokenExpirationThreshold:
+        print(f'Token expiration threshold within {tokenExpirationThreshold:.2f} hours of expiry, re-authentication required..')
         os.remove("mycreds.txt")
 
-
 def authNow():
+
     gauth = GoogleAuth()
     # Try to load saved client credentials
     gauth.LoadCredentialsFile("mycreds.txt")
