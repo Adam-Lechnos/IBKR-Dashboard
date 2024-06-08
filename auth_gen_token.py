@@ -2,10 +2,12 @@ import json
 import os
 import requests
 from pydrive.auth import GoogleAuth
-
-tokenExpirationThreshold=.10
+from requests.exceptions import ConnectionError
 
 def checkCreds():
+
+    tokenExpirationThreshold=.10
+    expiresIn=0
 
     if os.path.exists("mycreds.txt"):
         with open('mycreds.txt') as f:
@@ -19,19 +21,30 @@ def checkCreds():
     try:
         accessToken=credsData['access_token']
         r = requests.get(f"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}")
-        difference=round(float(r.json()['expires_in'])/60/60,2)
-    except:
-        print("token file 'mycreds.txt' missing keys per lookup values 'accessToken' or 'expires_in', re-authentication required..")
-        os.remove("mycreds.txt")
-        return
-
-    print(f'Access Token expiration in hours: {difference}. Force re-auth within threshold: {tokenExpirationThreshold:.2f} hours')
-    if difference < tokenExpirationThreshold:
+        try:
+            if (r.json()['error']):
+                print("Token invalid, re-authentication requied..")
+                os.remove("mycreds.txt")
+                return
+        except KeyError:
+            expiresIn=round(float(r.json()['expires_in'])/60/60,2)
+    except KeyError:
+        print("parsing available token response..")
+        expiresIn=round(float(r.json()['token_response']['expires_in'])/60/60,2)
+    except ConnectionError as c:
+        print("Cannot connect to oauth2.googleapis.com exiting..")
+        print(f"Connection Error: {c}")
+        exit(1)
+    except Exception as e:
+        print(f"Exception occured: {e}")
+        
+    print(f'Access Token expiration in hours: {expiresIn}. Force re-auth within threshold: {tokenExpirationThreshold:.2f} hours')
+    if expiresIn < tokenExpirationThreshold:
         print(f'Token expiration threshold within {tokenExpirationThreshold:.2f} hours of expiry, re-authentication required..')
-        os.remove("mycreds.txt")
+        # os.remove("mycreds.txt")
 
 def authNow():
-
+    
     gauth = GoogleAuth()
     # Try to load saved client credentials
     gauth.LoadCredentialsFile("mycreds.txt")
@@ -40,9 +53,7 @@ def authNow():
         # gauth.LocalWebserverAuth()
         print("Token generation required via OAuth flow..")
         gauth.CommandLineAuth()
-
     gauth.SaveCredentialsFile("mycreds.txt")
 
-if __name__ == '__main__':
-    checkCreds()
-    authNow()
+checkCreds()
+authNow()

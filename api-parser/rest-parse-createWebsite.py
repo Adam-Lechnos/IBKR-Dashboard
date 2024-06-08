@@ -33,25 +33,23 @@ except:
 
 
 
-def parseAPICreateWebFiles():
+def parseAPICreateWebFiles(today):
     columnDataRisk = ['RISK DATA']
     columnDataPos = []
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     result = sock.connect_ex((f'{IBeam}',5000))
     if result == 0:
-        print("Connection to IBeam container successful.. parsing IBKR API and creating Web files")
+        print(f"({today}) Connection to IBeam container successful.. parsing IBKR API and creating Web files")
     else:
-        print(f"Connection to IBeam container failed, retrying in {sleepTimeSeconds} seconds..", file=sys.stderr); return
-        return
+        print(f"({today}) Connection to IBeam container failed, retrying in {sleepTimeSeconds} seconds..", file=sys.stderr); return
     sock.close()
 
     grandTotalMarginBalance=0
     grandTotalNetLiquidationVal=0
-    today=datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%B %d, %Y %I:%M%p %Z")
     fileList = []
 
     response = requests.get('https://{IBeam}:5000/v1/api/portfolio/accounts'.format(IBeam=IBeam), verify=False)
-    if response.status_code != 200: print(f'Connection to IBKR API for Main Data did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
+    if response.status_code != 200: print(f'({today}) Connection to IBKR API for Main Data did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
     data=response.json()
     
     columnDataCsv = open(f"./webserver/static/{csvFileName}_temp.csv", "w", newline='')
@@ -65,7 +63,7 @@ def parseAPICreateWebFiles():
     for i in range(len(data)):
         accountId=data[i]['id']
         responseGAS = requests.get('https://{IBeam}:5000/v1/api/iserver/account/{accountId}/summary'.format(accountId=accountId, IBeam=IBeam), verify=False)
-        if responseGAS.status_code != 200: print(f'Connection to IBKR API for Margin Risk Data did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
+        if responseGAS.status_code != 200: print(f'({today}) Connection to IBKR API for Margin Risk Data did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
         dataGAS=responseGAS.json()
         accountName=data[i]['accountAlias']
         filenameRisk=accountName.replace(" ","-")
@@ -171,7 +169,7 @@ def parseAPICreateWebFiles():
     for i in range(len(data)):
         accountId=data[i]['id']
         responsePos = requests.get('https://{IBeam}:5000//v1/api/portfolio/{accountId}/positions/'.format(accountId=accountId, IBeam=IBeam), verify=False)
-        if responsePos.status_code != 200: print(f'Connection to IBKR API for Current Positions did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
+        if responsePos.status_code != 200: print(f'({today}) Connection to IBKR API for Current Positions did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
         accountName=data[i]['accountAlias']
         columnDataPos.append(accountName)
         filenamePos=accountName.replace(" ","-")
@@ -263,7 +261,7 @@ def parseAPICreateWebFiles():
     wr.writerow('')
     wr.writerow([f"Last Updated: {today}"])
     columnDataCsv.close()
-    print('Web files creation completed')
+    print(f'({today}) Web files creation completed')
 
     # write column data to csv file
     # with open("./webserver/static/IBKR_Data_temp.csv", "w", newline='') as columnDataCsv:
@@ -281,8 +279,10 @@ def parseAPICreateWebFiles():
 
 # call function every set number of seconds
 while True:
-    parseAPICreateWebFiles()
+    today=datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%B %d, %Y %I:%M%p %Z")
+    parseAPICreateWebFiles(today)
     print(f'sleep time interval set to {sleepTimeSeconds}')
-    for i in range(sleepTimeSeconds,0,-1):
-        print(f'Sleeping for {sleepTimeSeconds} seconds.. Press CTRL+C to end: {i:<10d}', end="\r")
-        time.sleep(1)
+    time.sleep(sleepTimeSeconds)
+    # for i in range(sleepTimeSeconds,0,-1):
+    #     print(f'Sleeping for {sleepTimeSeconds} seconds.. Press CTRL+C to end: {i:<10d}', end="\r")
+    #     time.sleep(1)
