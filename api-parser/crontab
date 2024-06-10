@@ -1,0 +1,1 @@
+*/1 * * * * python /usr/src/app/rest-parse-createWebsite.py -u #>> /usr/src/app/logfile

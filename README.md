@@ -58,7 +58,7 @@ Create the following Docker Compose environment files at the root of the git rep
   csvFileName=IBKR_Data
   ```
   * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
-  * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive.
+  * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive. Defaults to 60 when omitted.
   * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.parser` env file. Defaults to `IBKR_Data`.
 * env.list.ibeam
   ```
@@ -74,7 +74,7 @@ Create the following Docker Compose environment files at the root of the git rep
   csvFileName=IBKR_Data
   ```
   * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
-  * `sleepTimeSeconds` may set to the desired API parser re-run interval.
+  * `sleepTimeSeconds` may set to the desired API parser re-run interval. Defaults to 60 when omitted.
     * The pre-formatted HTML refresh interval will always be set to 5 seconds longer than this value.
   * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.gdrive` env file. Defaults to `IBKR_Data` when omitted.
 * env.list.dashboard

@@ -1,0 +1,1 @@
+*/1 * * * * python /usr/src/app/push-to-gdrive.py -u #>> /usr/src/app/logfile

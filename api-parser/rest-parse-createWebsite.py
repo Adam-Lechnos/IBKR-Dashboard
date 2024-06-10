@@ -49,9 +49,9 @@ def parseAPICreateWebFiles(today):
     if response.status_code != 200: print(f'({today}) Connection to IBKR API for Main Data did not return 200, retrying in {sleepTimeSeconds} seconds..', file=sys.stderr); return
     data=response.json()
     
-    columnDataCsv = open(f"./webserver/static/{csvFileName}_temp.csv", "w", newline='')
+    columnDataCsv = open(f"/usr/src/app/webserver/static/{csvFileName}_temp.csv", "w+", newline='')
     wr = csv.writer(columnDataCsv, quoting=csv.QUOTE_ALL)
-    f = open("./webserver/static/index_temp.html", "w"); fileList.append("./webserver/static/index_temp.html")
+    f = open("/usr/src/app/webserver/static/index_temp.html", "w+"); fileList.append("/usr/src/app/webserver/static/index_temp.html")
     f.write(f'<html> <head> <title>IBKR Dashboard</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
     f.write("<pre>")
     f.write('<img src="./images/interactive-brokers.svg" alt="Interactive Brokers" border="0" loading="lazy" width="200" height="40" />')
@@ -64,7 +64,7 @@ def parseAPICreateWebFiles(today):
         dataGAS=responseGAS.json()
         accountName=data[i]['accountAlias']
         filenameRisk=accountName.replace(" ","-")
-        fRisk = open(f"./webserver/static/Risk-{filenameRisk}_temp.html", "w"); fileList.append(f"./webserver/static/Risk-{filenameRisk}_temp.html")
+        fRisk = open(f"/usr/src/app/webserver/static/Risk-{filenameRisk}_temp.html", "w+"); fileList.append(f"/usr/src/app/webserver/static/Risk-{filenameRisk}_temp.html")
         fRisk.write(f'<html> <head> <title>IBKR Dashboard: Margin Risk: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
         fRisk.write('<pre>')
         accountId='************'+accountId[-2:]
@@ -173,8 +173,8 @@ def parseAPICreateWebFiles(today):
         accountId='************'+accountId[-2:]
         f.write(f'<h4>Account Name: {accountName}, Account ID: {accountId}</h4>')
         f.write(f'<a href="./Pos-{filenamePos}.html">{accountName}</a>\n')
-        fPos = open(f"./webserver/static/Pos-{filenamePos}_temp.html", "w"); fileList.append(f"./webserver/static/Pos-{filenamePos}_temp.html")
-        fPosBuf = open(f"./webserver/static/PosBuf-{filenamePos}.html", "w")
+        fPos = open(f"/usr/src/app/webserver/static/Pos-{filenamePos}_temp.html", "w+"); fileList.append(f"/usr/src/app/webserver/static/Pos-{filenamePos}_temp.html")
+        fPosBuf = open(f"/usr/src/app/webserver/static/PosBuf-{filenamePos}.html", "w+")
         fPos.write(f'<html> <head> <title>IBKR Dashboard: Current Positions: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
         fPos.write('<pre>')
         fPos.write(f'<h4>Current Positions | Account Name: {accountName}, Account ID: {accountId} | Last Updated: {today}</h4>')
@@ -238,7 +238,7 @@ def parseAPICreateWebFiles(today):
         fPos.write("\n")
         fPos.write(f'{"Account Realized PnL: $":>25s} <font color="{realizedPnLCol}">{perAccountPL:>15.2f}</font>')
         fPos.write("</b>\n\n")
-        with open(f"./webserver/static/PosBuf-{filenamePos}.html", "r") as fPosBufRead: contents = fPosBufRead.readlines()
+        with open(f"/usr/src/app/webserver/static/PosBuf-{filenamePos}.html", "r") as fPosBufRead: contents = fPosBufRead.readlines()
         contents = "".join(contents)
         fPos.write(contents)
         fPos.write("\n</pre> </body> </html>")
@@ -261,13 +261,13 @@ def parseAPICreateWebFiles(today):
     print(f'({today}) Web files creation completed')
 
     # write column data to csv file
-    # with open("./webserver/static/IBKR_Data_temp.csv", "w", newline='') as columnDataCsv:
+    # with open("/usr/src/app/webserver/static/IBKR_Data_temp.csv", "w", newline='') as columnDataCsv:
     #     wr = csv.writer(columnDataCsv, quoting=csv.QUOTE_ALL)
     #     wr.writerow(columnDataRisk)
     #     wr.writerow(columnDataPos)
     #     wr.writerow('')
     #     wr.writerow([f"Last Updated: {today}"])
-    fileList.append(f"./webserver/static/{csvFileName}_temp.csv")
+    fileList.append(f"/usr/src/app/webserver/static/{csvFileName}_temp.csv")
 
     # rename all temp webpage files for URL referencing including default index.html
     for source in fileList:
@@ -277,11 +277,16 @@ def parseAPICreateWebFiles(today):
     return
 
 # call function every set number of seconds
-while True:
-    today=datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%B %d, %Y %I:%M%p %Z")
-    parseAPICreateWebFiles(today)
-    print(f'({today}) sleep time interval set to {sleepTimeSeconds}')
-    time.sleep(sleepTimeSeconds)
+# while True:
+#     today=datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%B %d, %Y %I:%M%p %Z")
+#     parseAPICreateWebFiles(today)
+#     print(f'({today}) sleep time interval set to {sleepTimeSeconds}')
+#     time.sleep(sleepTimeSeconds)
+
     # for i in range(sleepTimeSeconds,0,-1):
     #     print(f'Sleeping for {sleepTimeSeconds} seconds.. Press CTRL+C to end: {i:<10d}', end="\r")
     #     time.sleep(1)
+
+if __name__ == '__main__':
+    today=datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%B %d, %Y %I:%M%p %Z")
+    parseAPICreateWebFiles(today)
