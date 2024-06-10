@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir -r requirements.txt && \
 COPY rest-parse-createWebsite.py .
 COPY run.sh .
 
-CMD ["python", "rest-parse-createWebsite.py", "60"]
+CMD ["python", "rest-parse-createWebsite.py", "-u"]

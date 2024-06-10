@@ -48,16 +48,18 @@ Encrypt your IBKR password and store the encryped password and key within the `e
 * Remove the password from the `gen_key_pw.py` file
 
 # Docker Compose Environment Files
-Create the following Docker Compose environment files at the root of the git repo
+Create the following Docker Compose environment files at the root of the git repo.
 
 * env.list.gdrive
   ```
+  PYTHONUNBUFFERED=1
   folderId=Google_Drive_Folder_ID
   refreshPushSeconds=60
   csvFileName=IBKR_Data
   ```
-  * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive
-  * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.parser` env file. Defaults to `IBKR_Data`
+  * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
+  * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive.
+  * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.parser` env file. Defaults to `IBKR_Data`.
 * env.list.ibeam
   ```
   IBEAM_ACCOUNT=ibkr_username
@@ -65,22 +67,28 @@ Create the following Docker Compose environment files at the root of the git rep
   IBEAM_KEY=encryption_key
   ```
   * Input your IBKR Username and Password into `gen_key_pw.py` then execute the script to generate the required input data
-* env.list.parser
+* env.list.parser.
   ```
+  PYTHONUNBUFFERED=1
   sleepTimeSeconds=60
   csvFileName=IBKR_Data
   ```
+  * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
   * `sleepTimeSeconds` may set to the desired API parser re-run interval.
     * The pre-formatted HTML refresh interval will always be set to 5 seconds longer than this value.
-  * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.gdrive` env file. Defaults to `IBKR_Data`
+  * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.gdrive` env file. Defaults to `IBKR_Data` when omitted.
 * env.list.dashboard
   ```
+  PYTHONUNBUFFERED=1
   useTLS=no
   webPort=8443
+  flaskDebug=False
   ```
-  * `useTLS` may set to `yes` for enabling TLS. Place the key and certificate files within the root of the git repo with file names `server.key` and gh r`server.crt` respectively   
-    * Uncomment the `docker-compose.yml` under the commented line `# Uncomment below to specify TLS cert/key files`
-  * `webPort` may set to any other port. Change the port number in `docker-compose.yml` to the same value as the new webPort number under the `ibkr-dashboard` service
+  * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
+  * `useTLS` may set to `yes` for enabling TLS. Place the key and certificate files within the root of the git repo with file names `server.key` and gh r`server.crt` respectively.
+    * Uncomment the `docker-compose.yml` under the commented line `# Uncomment below to specify TLS cert/key files`.
+  * `webPort` may set to any other port. Change the port number in `docker-compose.yml` to the same value as the new webPort number under the `ibkr-dashboard` service.
+  * `flaskDebug` set the debug mode to. Defaults to False if omitted.
 
 # Google Cloud OAuth With Enabled APIs
 Enable Google Cloud OAuth flow by creating a project in Google Console, enabling the Google Drive APIs, then downloading the OAuth `client_secrets.json` for OAuth command authorization flow for container permissions to Google Drive.

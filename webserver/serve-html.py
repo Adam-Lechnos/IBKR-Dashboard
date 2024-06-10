@@ -4,6 +4,12 @@ import ssl
 
 useTLS=os.environ.get('useTLS')
 webPort=os.environ.get('webPort')
+flaskDebug=os.environ.get('flaskDebug')
+
+if flaskDebug == False == None: flaskDebug = False
+print(f'Debug mode: {flaskDebug}')
+print(f'Port: {webPort}')
+print(f'Use TLS: {useTLS}')
 
 app = Flask(__name__)
 
@@ -43,6 +49,6 @@ if __name__ == '__main__':
     if useTLS == "yes":
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain('server.crt','server.key')
-        app.run(debug=True, host='0.0.0.0', port=webPort, ssl_context=context)
+        app.run(debug=flaskDebug, host='0.0.0.0', port=webPort, ssl_context=context)
     else:
-        app.run(debug=True, host='0.0.0.0', port=webPort)
+        app.run(debug=flaskDebug, host='0.0.0.0', port=webPort)

@@ -20,7 +20,6 @@ sleepTimeSeconds = int(os.environ.get('sleepTimeSeconds'))
 csvFileName = os.environ.get('csvFileName')
 if sleepTimeSeconds == None: sleepTimeSeconds = 60
 if csvFileName == None: csvFileName = 'IBKR_Data'
-# if 'sleepTimeSeconds' not in globals(): sleepTimeSeconds = 60
 # set webpage refresh time by extra seconds passed program refresh interval
 refreshPageSeconds=sleepTimeSeconds+5
 
@@ -30,8 +29,6 @@ try:
         IBeam = f.readline().rstrip()
 except:
     print(f"Unable to locate '/var/ibkr/util-data/ip-addr.txt' in shared volume mount for IBeam container IP", file=sys.stderr)
-
-
 
 def parseAPICreateWebFiles(today):
     columnDataRisk = ['RISK DATA']
@@ -276,12 +273,14 @@ def parseAPICreateWebFiles(today):
     for source in fileList:
         dest=source.replace('_temp','')
         os.rename(source, dest)
+    
+    return
 
 # call function every set number of seconds
 while True:
     today=datetime.datetime.now(pytz.timezone('US/Eastern')).strftime("%B %d, %Y %I:%M%p %Z")
     parseAPICreateWebFiles(today)
-    print(f'sleep time interval set to {sleepTimeSeconds}')
+    print(f'({today}) sleep time interval set to {sleepTimeSeconds}')
     time.sleep(sleepTimeSeconds)
     # for i in range(sleepTimeSeconds,0,-1):
     #     print(f'Sleeping for {sleepTimeSeconds} seconds.. Press CTRL+C to end: {i:<10d}', end="\r")
