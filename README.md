@@ -1,5 +1,5 @@
 # IBKR-Dashboard
-Docker Compose for creating a IBKR Dashboard which includes risk data and current positions
+Docker Compose for creating an IBKR Dashboard which includes risk data and current positions across all accessible accounts.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub Release](https://img.shields.io/github/v/release/Adam-Lechnos/IBKR-Dashboard)
  
