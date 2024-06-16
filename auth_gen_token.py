@@ -41,7 +41,7 @@ def checkCreds():
     print(f'Access Token expiration in hours: {expiresIn}. Force re-auth within threshold: {tokenExpirationThreshold:.2f} hours')
     if expiresIn < tokenExpirationThreshold:
         print(f'Token expiration threshold within {tokenExpirationThreshold:.2f} hours of expiry, re-authentication required..')
-        # os.remove("mycreds.txt")
+        os.remove("mycreds.txt")
 
 def authNow():
     
