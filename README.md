@@ -22,6 +22,7 @@ The containers are made public within Docker Hub
 # Pre-requisites
 * Python3
 * Python3 pip
+* [Apache Utilities Package](https://www.digitalocean.com/community/tutorials/how-to-set-up-password-authentication-with-apache-on-ubuntu-18-04-quickstart) for Basic Authentication
 * [Docker Engine](https://docs.docker.com/engine/install/)
 * Google Account and target Google Drive Folder ID
   * Embedded within the browser's URL when at the target folder usually after the `/folder/` string.

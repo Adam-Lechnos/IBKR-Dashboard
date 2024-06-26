@@ -18,6 +18,8 @@ requests.packages.urllib3.disable_warnings(requests.packages.urllib3.exceptions.
 
 sleepTimeSeconds = int(os.environ.get('sleepTimeSeconds'))
 csvFileName = os.environ.get('csvFileName')
+webPageTitle = os.environ.get('webPageTitle')
+if webPageTitle == None: webPageTitle = 'IBKR Dashboard'
 if sleepTimeSeconds == None: sleepTimeSeconds = 60
 if csvFileName == None: csvFileName = 'IBKR_Data'
 # set webpage refresh time by extra seconds passed program refresh interval
@@ -52,7 +54,7 @@ def parseAPICreateWebFiles(today):
     columnDataCsv = open(f"/usr/src/app/webserver/static/{csvFileName}_temp.csv", "w+", newline='')
     wr = csv.writer(columnDataCsv, quoting=csv.QUOTE_ALL)
     f = open("/usr/src/app/webserver/static/index_temp.html", "w+"); fileList.append("/usr/src/app/webserver/static/index_temp.html")
-    f.write(f'<html> <head> <title>IBKR Dashboard</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
+    f.write(f'<html> <head> <title>{webPageTitle}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
     f.write("<pre>")
     f.write('<img src="./images/interactive-brokers.svg" alt="Interactive Brokers" border="0" loading="lazy" width="200" height="40" />')
     f.write('<br><br><hr>')
@@ -65,7 +67,7 @@ def parseAPICreateWebFiles(today):
         accountName=data[i]['accountAlias']
         filenameRisk=accountName.replace(" ","-")
         fRisk = open(f"/usr/src/app/webserver/static/Risk-{filenameRisk}_temp.html", "w+"); fileList.append(f"/usr/src/app/webserver/static/Risk-{filenameRisk}_temp.html")
-        fRisk.write(f'<html> <head> <title>IBKR Dashboard: Margin Risk: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
+        fRisk.write(f'<html> <head> <title>{webPageTitle}: Margin Risk: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
         fRisk.write('<pre>')
         accountId='************'+accountId[-2:]
         f.write(f'<h4>Account Name: {accountName}, Account ID: {accountId}</h4>')
@@ -175,7 +177,7 @@ def parseAPICreateWebFiles(today):
         f.write(f'<a href="./Pos-{filenamePos}.html">{accountName}</a>\n')
         fPos = open(f"/usr/src/app/webserver/static/Pos-{filenamePos}_temp.html", "w+"); fileList.append(f"/usr/src/app/webserver/static/Pos-{filenamePos}_temp.html")
         fPosBuf = open(f"/usr/src/app/webserver/static/PosBuf-{filenamePos}.html", "w+")
-        fPos.write(f'<html> <head> <title>IBKR Dashboard: Current Positions: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
+        fPos.write(f'<html> <head> <title>{webPageTitle}: Current Positions: {accountName}</title> <link rel="shortcut icon" href="./favicon.ico"> <meta http-equiv="refresh" content="{refreshPageSeconds}"\/> </head> <body>')
         fPos.write('<pre>')
         fPos.write(f'<h4>Current Positions | Account Name: {accountName}, Account ID: {accountId} | Last Updated: {today}</h4>')
         fPos.write('<a href="./">Dashboard</a>\n\n')

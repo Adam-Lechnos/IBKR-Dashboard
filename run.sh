@@ -47,4 +47,12 @@ else
     echo "Token file exists, proceeding"
 fi
 
+if [ ! -f ./.htpasswd ]; then
+    echo "nginx basic auth file does not exist, creating"
+    read -p "Enter Username: " userName
+    htpasswd -c ./.htpasswd $userName
+else
+    echo "basic auth file exists, proceeding"
+fi
+
 docker compose pull && docker compose up -d

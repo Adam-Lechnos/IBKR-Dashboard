@@ -1,6 +1,5 @@
 import os.path
 import sys
-import time
 import pytz
 import datetime
 from pydrive.auth import GoogleAuth
@@ -54,18 +53,20 @@ def pushToGdrive(folderId, today, drive):
     # drive=GoogleDrive(gauth)
     try:
         file_list = drive.ListFile({'q':"'"+folderId+"' in parents and title='"+csvFileName+"' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false"}).GetList()
-        file_id=file_list[0]['id']
+        file_id=file_list[-1]['id']
         csvUpdate = drive.CreateFile({'id':file_id})
         csvUpdate.SetContentFile(f'/usr/src/app/webserver/static/{csvFileName}.csv')
         csvUpdate.Upload({'convert':True})
         print(f"({today}) File update successful on File ID: {file_id}")
-    except:
+    except IndexError:
         print(f"({today}) '{csvFileName}.csv' not found, creating..")
         csvFile = drive.CreateFile({'title':f'{csvFileName}', 'parents':[{'id': f'{folderId}'}]})
         csvFile.SetContentFile(f'/usr/src/app/webserver/static/{csvFileName}.csv')
         csvFile.Upload({'convert':True})
         file_id=csvFile['id']
         print(f"({today}) File creation successful. File ID: {file_id}")
+    except Exception as e:
+        print(f"({today}) '{csvFileName}.csv' not found due to the following exception: {e}, retrying in {sleepTimeSeconds}..", file=sys.stderr); return
 
 # call function every set number of seconds
 if __name__ == '__main__':

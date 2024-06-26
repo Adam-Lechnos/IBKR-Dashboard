@@ -33,12 +33,13 @@ services:
     volumes:
       - util-data:/var/ibkr/util-data
       - web-data:/usr/src/app/webserver
-  ibkr-dashboard:
+  # 
+  ibkr-dashboard-nginx:
   # image: voyz/ibeam
     depends_on:
       - ibkr-create-website
-    image: adamlechnos/ibkr-dashboard
-    container_name: ibkr-dashboard
+    image: adamlechnos/ibkr-dashboard-nginx
+    container_name: ibkr-dashboard-nginx
     env_file:
       - env.list.dashboard
     ports:
@@ -53,6 +54,12 @@ services:
       - type: bind
         source: ./server.key
         target: /usr/src/app/server.key
+      - type: bind
+        source: ./default.conf
+        target: /etc/nginx/conf.d/default.conf
+      - type: bind
+        source: ./.htpasswd
+        target: /etc/nginx/.htpasswd
       - util-data:/var/ibkr/util-data
       - web-data:/usr/src/app/webserver
   ibkr-push-gdrive:
