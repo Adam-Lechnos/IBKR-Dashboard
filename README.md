@@ -9,7 +9,7 @@ Consists of fouse containers
 * [ibeam](https://github.com/Voyz/ibeam) - With some modifications for inter-pod discovery; a headless API Gateway enabling authenticating to Interactive Brokers Web API
   * Created by [Voyz](https://github.com/Voyz) with modifications made by me for service discovery across external containers
 * ibkr-api-parser - Parses the IBKR API and returns to pre-formatted HTML and a downloadable CSV on a recurring interval
-* ibkr-dashboard - A Flask web server for displaying the pre-formatted HTML and refreshes on a recurring interval, also enabling access to the downloadable CSV data
+* ibkr-dashboard - An nginx web server for displaying the `ibkr-api-parser` generated pre-formatted HTML, enabled with TLS and Basic Authentication by default.
 * ibkr-push-gdrive - Pushes the updated and downloadable dashboard CSV data into Google Drive as a Google Sheet on a recurring interval, updating the existing file once created
 
 ## Docker Hub
@@ -29,11 +29,14 @@ The containers are made public within Docker Hub
 * Install `requirements.txt` by executing within the git folder `pip3 -r requirements.txt`
 * [Generate Encrypted IBKR Password and Key Pair](#generate-encrypted-ibkr-password-and-key-pair)
 * [Docker Compose Environment Files](#docker-compose-environment-files)
+* [nginx Config file](#nginx-config-file)
 * [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-with-enabled-apis)
   * And the subsequent `client_secrets.json` containing the `client_secret` and `client_id` for use by the [pydrive.auth](https://pythonhosted.org/PyDrive/oauth.html) library.
 
 # Generate Encrypted IBKR Password and Key Pair
 Encrypt your IBKR password and store the encryped password and key within the `env.list.ibeam` when creating the [Docker Compose Environment Files](#docker-compose-environment-files)
+
+**Security Recommendation**: It is recommend to first create an additional read-only user with a strong password. Additional IP restriction is also recommended if feasible. Refer to the official Interactive Brokers documenting [here](https://www.ibkrguides.com/clientportal/uar/addingauser.htm).
 
 * Create a file named `gen_key_pw.py`
 * Add the following to the file, replacing `'password'` with your IBKR password. (this file is part of `.gitignore`)
@@ -78,7 +81,7 @@ Create the following Docker Compose environment files at the root of the git rep
   * `sleepTimeSeconds` may set to the desired API parser re-run interval. Defaults to 60 when omitted.
     * The pre-formatted HTML refresh interval will always be set to 5 seconds longer than this value.
   * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.gdrive` env file. Defaults to `IBKR_Data` when omitted.
-* env.list.dashboard
+<!-- * env.list.dashboard
   ```
   PYTHONUNBUFFERED=1
   useTLS=no
@@ -89,7 +92,43 @@ Create the following Docker Compose environment files at the root of the git rep
   * `useTLS` may set to `yes` for enabling TLS. Place the key and certificate files within the root of the git repo with file names `server.key` and gh r`server.crt` respectively.
     * Uncomment the `docker-compose.yml` under the commented line `# Uncomment below to specify TLS cert/key files`.
   * `webPort` may set to any other port. Change the port number in `docker-compose.yml` to the same value as the new webPort number under the `ibkr-dashboard` service.
-  * `flaskDebug` set the debug mode to. Defaults to False if omitted.
+  * `flaskDebug` set the debug mode to. Defaults to False if omitted. -->
+
+# nginx Config file
+The nginx config file provides customizable authentication settings, ports, TLS certificates, error and default web pages.
+
+* default.conf
+  * Global config - TLS, port, server name, and TLS cert settings
+    ```
+    listen       8443 ssl;
+    listen  [::]:8443 ssl;
+    server_name  localhost;
+    ssl_certificate /usr/src/app/server.crt;
+    ssl_certificate_key /usr/src/app/server.key;
+    ```
+  * option details:
+    * listen: must match the port specified within the `docker-compose.yml`. Remove `ssl` option to disable TLS auth
+    * server_name: local hostname
+    * ssl_certificate: certificate file which is first copied from the root folder `./server.crt`
+    * ssl_certificate_key: certificate private key which is first copied from the root folder `./server.key`
+
+  * Local config - basic auth and default webpage settings
+    ```
+    location / {
+        root   /usr/src/app/webserver/static;
+        index  index.html;
+
+        auth_basic "Restricted";
+        auth_basic_user_file  /etc/nginx/.htpasswd;
+
+        include  /etc/nginx/mime.types;
+    }
+    ```
+  * option details:
+    * root: location where the static webpages are served
+    * index.html: default webpage filename
+    * auth_basic: leave as `"Restricted"` to enable password auth challenge
+    * auth_basic_user_file: location of the `.htpasswd` which houses the authorized users and accompanying encrypted passwords. The file is generated upon running `run.sh` the fist time and placed in the root folder, adding the initial authorized user.
 
 # Google Cloud OAuth With Enabled APIs
 Enable Google Cloud OAuth flow by creating a project in Google Console, enabling the Google Drive APIs, then downloading the OAuth `client_secrets.json` for OAuth command authorization flow for container permissions to Google Drive.

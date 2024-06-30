@@ -23,7 +23,7 @@ def checkCreds():
         r = requests.get(f"https://oauth2.googleapis.com/tokeninfo?access_token={accessToken}")
         try:
             if (r.json()['error']):
-                print("Token invalid, re-authentication requied..")
+                print("Token invalid, re-authentication required..")
                 os.remove("mycreds.txt")
                 return
         except KeyError:
