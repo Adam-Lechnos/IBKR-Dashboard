@@ -26,11 +26,13 @@ if csvFileName == None: csvFileName = 'IBKR_Data'
 refreshPageSeconds=sleepTimeSeconds+5
 
 # Parse IP from ip-addr.txt within the IBeam container via shared volume mount
-try:
+ipFile="/var/ibkr/util-data/ip-addr.txt"
+if os.path.isfile(ipFile):
     with open("/var/ibkr/util-data/ip-addr.txt", "r") as f:
         IBeam = f.readline().rstrip()
-except:
-    print(f"Unable to locate '/var/ibkr/util-data/ip-addr.txt' in shared volume mount for IBeam container IP", file=sys.stderr)
+else:
+    print(f"Unable to locate '/var/ibkr/util-data/ip-addr.txt' in shared volume mount for IBeam container IP. May be a K8s cluster", file=sys.stderr)
+    IBeam="ibeam"
 
 def parseAPICreateWebFiles(today):
     columnDataRisk = ['RISK DATA']
