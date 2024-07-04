@@ -9,14 +9,14 @@ Consists of fouse containers
 * [ibeam](https://github.com/Voyz/ibeam) - With some modifications for inter-pod discovery; a headless API Gateway enabling authenticating to Interactive Brokers Web API
   * Created by [Voyz](https://github.com/Voyz) with modifications made by me for service discovery across external containers
 * ibkr-api-parser - Parses the IBKR API and returns to pre-formatted HTML and a downloadable CSV on a recurring interval
-* ibkr-dashboard - An nginx web server for displaying the `ibkr-api-parser` generated pre-formatted HTML, enabled with TLS and Basic Authentication by default.
+* ibkr-dashboard-nginx - An nginx web server for displaying the `ibkr-api-parser` generated pre-formatted HTML, enabled with TLS and Basic Authentication by default.
 * ibkr-push-gdrive - Pushes the updated and downloadable dashboard CSV data into Google Drive as a Google Sheet on a recurring interval, updating the existing file once created
 
 ## Docker Hub
 The containers are made public within Docker Hub
 * [ibeam](https://hub.docker.com/r/adamlechnos/ibeam)
 * [ibkr-api-parser](https://hub.docker.com/r/adamlechnos/ibkr-create-website)
-* [ibkr-dashboard](https://hub.docker.com/r/adamlechnos/ibkr-dashboard)
+* [ibkr-dashboard-nginx](https://hub.docker.com/r/adamlechnos/ibkr-dashboard-nginx)
 * [ibkr-push-gdrive](https://hub.docker.com/r/adamlechnos/ibkr-push-gdrive)
 
 # Pre-requisites
