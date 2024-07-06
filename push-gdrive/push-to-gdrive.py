@@ -2,14 +2,43 @@ import os.path
 import sys
 import pytz
 import datetime
+import smtplib
+from email.mime.text import MIMEText
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from cryptography.fernet import Fernet
 
 folderId= os.environ.get('folderId')
 csvFileName = os.environ.get('csvFileName')
+gmailAppPassword = os.environ.get('gmailAppPassword')
+gmailAppPasswordKey = os.environ.get('gmailAppPasswordKey')
+gmailUserName = os.environ.get('gmailUserName')
+gmailRecipient = os.environ.get('gmailRecipient')
 if csvFileName == None: csvFileName = 'IBKR_Data'
 sleepTimeSeconds=int(os.environ.get('refreshPushSeconds'))
 if sleepTimeSeconds == None: sleepTimeSeconds = 60
+
+
+if gmailAppPasswordKey != None:
+    def decodeGmailAppPassword():
+        b=Fernet(gmailAppPasswordKey)
+        pw=bytes(gmailAppPassword, "utf-8")
+        decoded_pw = b.decrypt(pw)
+        return str(decoded_pw, 'UTF-8')
+    gmailAppPassword = decodeGmailAppPassword()
+
+
+def sendEmail(sender, recipient, subject, body, password):
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = sender
+    msg['To'] = recipient
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
+        smtp_server.login(sender, password)
+        smtp_server.ehlo()
+        smtp_server.sendmail(sender, recipient, msg.as_string())
+    print("Email message sent")
+
 
 def oauthFlow(today):
     gauth = GoogleAuth()
@@ -19,6 +48,8 @@ def oauthFlow(today):
         # Authenticate if they're not there
         # gauth.LocalWebserverAuth()
         print(f"({today}) Google OAuth Token expired, executing OAuth flow below or run 'force_gdrive_push_reauth.sh'")
+        if gmailAppPassword != None:
+            sendEmail(gmailUserName, gmailRecipient, f"{csvFileName} - Push GDrive Token failed ({today})", "Log in to ssh-cloud1 and either follow the container logs and perform the OAuth CLI process, pasting the Access Code via an interactive container shell or execute the 'force_gdrive_push_reauth.sh'", gmailAppPassword)
         gauth.CommandLineAuth()
     elif gauth.access_token_expired:
     # Refresh them if expired
@@ -27,6 +58,8 @@ def oauthFlow(today):
         except Exception as e:
                 print(f"({today}) Google OAuth Token Refresh failed, execute 'force_gdrive_push_reauth.sh'. Exiting..")
                 print(f"Exception: {e}")
+                if gmailAppPassword != None:
+                    sendEmail(gmailUserName, gmailRecipient, f"{csvFileName} - Push GDrive Token failed ({today})", "Log in to ssh-cloud1 and execute the 'force_gdrive_push_reauth.sh'", gmailAppPassword)
                 exit(1)
     else:
         # Initialize the saved creds

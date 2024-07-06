@@ -60,10 +60,20 @@ Create the following Docker Compose environment files at the root of the git rep
   folderId=Google_Drive_Folder_ID
   refreshPushSeconds=60
   csvFileName=IBKR_Data
+  gmailAppPassword=encrypted_password
+  gmailAppPasswordKey=encryption_key
+  gmailUserName=gmailuser@gmail.com
+  gmailRecipient=gmailrecipient@gmail.com
+
   ```
   * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
   * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive. Defaults to 60 when omitted.
   * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.parser` env file. Defaults to `IBKR_Data`.
+  * `gmailAppPassword` use Google Accounts to generate an app password for GMail TLS SMTP Authentication. Encrypt the app password using `gen_key_pw.py`
+  * `gmailAppPasswordKey` the app password encryption key, generated from the same output as the `gmailAppPassword` using `gen_key_pw.py`
+    * Note that a plain text password may be used as a value for `gmailAppPassword` with the `gmailAppPasswordKey` key and value omitted, this is not recommended however.
+  * `gmailUserName` the GMail user sending the email and authenticating to GMail
+  * `gmailRecipient` the recipient of the emails
 * env.list.ibeam
   ```
   IBEAM_ACCOUNT=ibkr_username
@@ -71,6 +81,7 @@ Create the following Docker Compose environment files at the root of the git rep
   IBEAM_KEY=encryption_key
   ```
   * Input your IBKR Username and Password into `gen_key_pw.py` then execute the script to generate the required input data
+    * Note that a plain text password may be used as a value for `IBEAM_PASSWORD` with the `IBEAM_KEY` key and value omitted, this is not recommended however.
 * env.list.parser.
   ```
   PYTHONUNBUFFERED=1
@@ -102,13 +113,13 @@ The nginx config file provides customizable authentication settings, ports, TLS 
     ```
     listen       8443 ssl;
     listen  [::]:8443 ssl;
-    server_name  localhost;
+    server_name  ibkr-dash.example.com;
     ssl_certificate /usr/src/app/server.crt;
     ssl_certificate_key /usr/src/app/server.key;
     ```
   * option details:
     * listen: must match the port specified within the `docker-compose.yml`. Remove `ssl` option to disable TLS auth
-    * server_name: local hostname
+    * server_name: the full DNS of the webserver address. May be set to `localhost`
     * ssl_certificate: certificate file which is first copied from the root folder `./server.crt`
     * ssl_certificate_key: certificate private key which is first copied from the root folder `./server.key`
 
