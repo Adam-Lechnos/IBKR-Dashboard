@@ -1,4 +1,4 @@
-FROM python:alpine3.20
+FROM python:3.9.19-alpine3.20
 
 WORKDIR /usr/src/app
 
@@ -7,7 +7,8 @@ COPY rest-parse-createWebsite.py .
 COPY crontab .
 COPY run.sh .
 
-RUN pip install --no-cache-dir -r requirements.txt && \
+RUN apk add build-base linux-headers && \
+    pip install --no-cache-dir -r requirements.txt && \
     mkdir -p webserver/static/images
 
 RUN chmod +x run.sh

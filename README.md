@@ -47,7 +47,7 @@ Encrypt your IBKR password and store the encryped password and key within the `e
   key = Fernet.generate_key()
   f = Fernet(key)
   password = f.encrypt(b'password')
-  print(f'IBEAM_PASSWORD={password}, IBEAM_KEY={key}')
+  print(f'PASSWORD={password}, KEY={key}')
   ```
 * Execute the file via the command `python3 gen_key_pw.py`. Make not of the printed encrypted password and key, excluding the `b` in front of each string.
 * Remove the password from the `gen_key_pw.py` file

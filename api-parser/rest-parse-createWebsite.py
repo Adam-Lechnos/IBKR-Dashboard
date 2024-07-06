@@ -1,6 +1,7 @@
 import requests
 import datetime
 import socket
+import psutil
 import os
 import sys
 import time
@@ -45,6 +46,8 @@ def parseAPICreateWebFiles(today):
         print(f"({today}) Connection to IBeam container failed, retrying in {sleepTimeSeconds} seconds..", file=sys.stderr); return
     sock.close()
 
+    uptime=round(time.clock_gettime(time.CLOCK_BOOTTIME)/60,2)
+    systemUsage=(f"CPU {psutil.cpu_percent(4)}% :: RAM {psutil.virtual_memory()[2]}%")
     grandTotalMarginBalance=0
     grandTotalNetLiquidationVal=0
     fileList = []
@@ -256,7 +259,7 @@ def parseAPICreateWebFiles(today):
     f.write(f'{"Grand Total Realized PnL: $":>29s} <font color="{grandTotalPLCol}">{grandTotalPL:>15.2f}</font>')
     f.write("</b><br><br><hr>")
     # f.write('\n<a href="./IBKR_Data.csv">[Download CSV Data]</a>')
-    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Interval: {sleepTimeSeconds} seconds | Page Auto Refresh Interval: {refreshPageSeconds} seconds | <a href="./{csvFileName}.csv">[Download CSV Data]</a> | <a href="https://www.interactivebrokers.com/en/software/systemStatus.php" target="_blank" rel="noopener noreferrer">[System Status]</a></small></center>')
+    f.write(f'<center><small>Last Updated: {today} | Parser Re-run Interval: {sleepTimeSeconds} seconds | Page Auto Refresh Interval: {refreshPageSeconds} seconds | System Uptime: {uptime} minutes | System Usage: {systemUsage} | <a href="./{csvFileName}.csv">[Download CSV Data]</a> | <a href="https://www.interactivebrokers.com/en/software/systemStatus.php" target="_blank" rel="noopener noreferrer">[System Status]</a></small></center>')
     f.write("\n</pre> </body> </html>")
     f.close()
     wr.writerow('')
