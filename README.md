@@ -69,11 +69,12 @@ Create the following Docker Compose environment files at the root of the git rep
   * `PYTHONUNBUFFERED` should be specified as is to enable docker/container output logging.
   * `refreshPushSeconds` may be set to the desired CSV push interval for data overwrite in Google Drive. Defaults to 60 when omitted.
   * `csvFileName` (optional) the file name of the downloadable CSV. When specified must match the value within `env.list.parser` env file. Defaults to `IBKR_Data`.
-  * `gmailAppPassword` use Google Accounts to generate an app password for GMail TLS SMTP Authentication. Encrypt the app password using `gen_key_pw.py`
-  * `gmailAppPasswordKey` the app password encryption key, generated from the same output as the `gmailAppPassword` using `gen_key_pw.py`
+  * `gmailAppPassword` use Google Accounts to generate an app password for GMail TLS SMTP Authentication. Encrypt the app password using `gen_key_pw.py`. Optional, if omitted alert emails will be disabled.
+  * `gmailAppPasswordKey` the app password encryption key, generated from the same output as the `gmailAppPassword` using `gen_key_pw.py`. Required when specifying `gmailAppPassword`.
     * Note that a plain text password may be used as a value for `gmailAppPassword` with the `gmailAppPasswordKey` key and value omitted, this is not recommended however.
-  * `gmailUserName` the GMail user sending the email and authenticating to GMail
-  * `gmailRecipient` the recipient of the emails
+  * `gmailUserName` the GMail user sending the email and authenticating to GMail. Required when specifying `gmailAppPassword`.
+  * `gmailRecipient` the recipient of the emails. Required when specifying `gmailAppPassword`.
+
 * env.list.ibeam
   ```
   IBEAM_ACCOUNT=ibkr_username
@@ -82,6 +83,7 @@ Create the following Docker Compose environment files at the root of the git rep
   ```
   * Input your IBKR Username and Password into `gen_key_pw.py` then execute the script to generate the required input data
     * Note that a plain text password may be used as a value for `IBEAM_PASSWORD` with the `IBEAM_KEY` key and value omitted, this is not recommended however.
+    
 * env.list.parser.
   ```
   PYTHONUNBUFFERED=1
