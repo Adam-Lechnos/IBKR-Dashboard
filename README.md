@@ -32,6 +32,7 @@ The containers are made public within Docker Hub
 * [nginx Config file](#nginx-config-file)
 * [Google Cloud OAuth With Enable APIs](#google-cloud-oauth-with-enabled-apis)
   * And the subsequent `client_secrets.json` containing the `client_secret` and `client_id` for use by the [pydrive.auth](https://pythonhosted.org/PyDrive/oauth.html) library.
+* [Google App Password](https://knowledge.workspace.google.com/kb/how-to-create-app-passwords-000009237) for authenticating to GMail's SMTP server with TLS to enable email alerts. This is optional and will require omissions of keys within the environment files as detailed below. OAuth is not used here as alerting would not work for broken tokens/authentication.
 
 # Generate Encrypted IBKR Password and Key Pair
 Encrypt your IBKR password and store the encryped password and key within the `env.list.ibeam` when creating the [Docker Compose Environment Files](#docker-compose-environment-files)
@@ -83,7 +84,7 @@ Create the following Docker Compose environment files at the root of the git rep
   ```
   * Input your IBKR Username and Password into `gen_key_pw.py` then execute the script to generate the required input data
     * Note that a plain text password may be used as a value for `IBEAM_PASSWORD` with the `IBEAM_KEY` key and value omitted, this is not recommended however.
-    
+
 * env.list.parser.
   ```
   PYTHONUNBUFFERED=1
