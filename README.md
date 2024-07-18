@@ -3,6 +3,7 @@ Docker Compose for creating an IBKR Dashboard which includes risk data and curre
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![GitHub Release](https://img.shields.io/github/v/release/Adam-Lechnos/IBKR-Dashboard)
  
+[Helm Charts Edition](https://github.com/Adam-Lechnos/IBKR-Dashboard-K8s-Helm)
 
 # Containers
 Consists of fouse containers
