@@ -164,5 +164,6 @@ test.py
 env.list*
 mycreds.txt
 client_secrets.json
+default.conf
 *.key
 *.crt
