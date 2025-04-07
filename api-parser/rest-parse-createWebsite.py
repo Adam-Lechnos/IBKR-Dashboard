@@ -113,7 +113,7 @@ def parseAPICreateWebFiles(today):
         if totalCashValue < 0: totalCashValuePerAccount = totalCashValue
 
         marginCus = ((excessLiquidity/netLiquidationValue) * 100)
-        marginPer = (((totalCashValuePerAccount * -1)/netLiquidationValue) * 100)
+        marginPer = (((totalCashValuePerAccount * -1)/(netLiquidationValue+(totalCashValuePerAccount*-1))) * 100)
         netLiquidationValCol="green" if (grandTotalNetLiquidationVal >= 0) else "red"
         totalCashValuePerAccountCol="red" if (grandTotalMarginBalance < 0) else "green"
         marginCusCol = "green" if (marginCus >= 50) else "red"
@@ -137,14 +137,14 @@ def parseAPICreateWebFiles(today):
         fRisk.write('<b>')
         fRisk.write(f'\n\nMargin Risk Chart: % Account NLV (*current risk level <=)\n')
         fRisk.write('</b>')
-        fRisk.write('-'*81)
+        fRisk.write('-'*97)
         fRisk.write('\n')
-        fRisk.write(f'| 20% <= | ${netLiquidationValue*.20:>15.2f} | Margin Call at {((netLiquidationValue-(netLiquidationValue*.20))/netLiquidationValue)*100:.2f}% Drop | {"Low Risk":<16s} | {"<b><font color=""green"">*</font></b>" if (totalCashValuePerAccount*-1 <= netLiquidationValue*.20) else " "} |\n')
-        fRisk.write(f'| 30% <= | ${netLiquidationValue*.30:>15.2f} | Margin Call at {((netLiquidationValue-(netLiquidationValue*.30))/netLiquidationValue)*100:.2f}% Drop | {"Medium Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (totalCashValuePerAccount*-1 <= netLiquidationValue*.30) and (totalCashValuePerAccount*-1 > netLiquidationValue*.20) else " "} |\n')
-        fRisk.write(f'| 35% <= | ${netLiquidationValue*.35:>15.2f} | Margin Call at {((netLiquidationValue-(netLiquidationValue*.35))/netLiquidationValue)*100:.2f}% Drop | {"Mediam High Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (totalCashValuePerAccount*-1 <= netLiquidationValue*.35) and (totalCashValuePerAccount*-1 > netLiquidationValue*.30) else " "} |\n')
-        fRisk.write(f'| 40% <= | ${netLiquidationValue*.40:>15.2f} | Margin Call at {((netLiquidationValue-(netLiquidationValue*.40))/netLiquidationValue)*100:.2f}% Drop | {"High Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (totalCashValuePerAccount*-1 <= netLiquidationValue*.40) and (totalCashValuePerAccount*-1 > netLiquidationValue*.35) else " "} |\n')
-        fRisk.write(f'| 50% >= | ${netLiquidationValue*.50:>15.2f} | Margin Call at {((netLiquidationValue-(netLiquidationValue*.50))/netLiquidationValue)*100:.2f}% Drop | {"Extreme Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (totalCashValuePerAccount*-1 > netLiquidationValue*.40) else " "} |\n')
-        fRisk.write('-'*81)
+        fRisk.write(f'| 20% <= | Margin Balance: ${(netLiquidationValue+(totalCashValuePerAccount*-1))*.20:>15.2f} | Margin Call at {((((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.20))-maintenanceMargin)/((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.20)))*100:.2f}% Drop | {"Low Risk":<16s} | {"<b><font color=""green"">*</font></b>" if (totalCashValuePerAccount*-1 <= (netLiquidationValue+(totalCashValuePerAccount*-1))*.20) else " "} |\n')
+        fRisk.write(f'| 30% <= | Margin Balance: ${(netLiquidationValue+(totalCashValuePerAccount*-1))*.30:>15.2f} | Margin Call at {((((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.30))-maintenanceMargin)/((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.30)))*100:.2f}% Drop | {"Medium Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (totalCashValuePerAccount*-1 <= (netLiquidationValue+(totalCashValuePerAccount*-1))*.30) and (totalCashValuePerAccount*-1 > (netLiquidationValue+(totalCashValuePerAccount*-1))*.20) else " "} |\n')
+        fRisk.write(f'| 35% <= | Margin Balance: ${(netLiquidationValue+(totalCashValuePerAccount*-1))*.35:>15.2f} | Margin Call at {((((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.35))-maintenanceMargin)/((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.35)))*100:.2f}% Drop | {"Mediam High Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (totalCashValuePerAccount*-1 <= (netLiquidationValue+(totalCashValuePerAccount*-1))*.35) and (totalCashValuePerAccount*-1 > (netLiquidationValue+(totalCashValuePerAccount*-1))*.30) else " "} |\n')
+        fRisk.write(f'| 40% <= | Margin Balance: ${(netLiquidationValue+(totalCashValuePerAccount*-1))*.40:>15.2f} | Margin Call at {((((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.40))-maintenanceMargin)/((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.40)))*100:.2f}% Drop | {"High Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (totalCashValuePerAccount*-1 <= (netLiquidationValue+(totalCashValuePerAccount*-1))*.40) and (totalCashValuePerAccount*-1 > (netLiquidationValue+(totalCashValuePerAccount*-1))*.35) else " "} |\n')
+        fRisk.write(f'| 50% >= | Margin Balance: ${(netLiquidationValue+(totalCashValuePerAccount*-1))*.50:>15.2f} | Margin Call at {((((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.50))-maintenanceMargin)/((netLiquidationValue+(totalCashValuePerAccount*-1))*(1-.50)))*100:.2f}% Drop | {"Extreme Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (totalCashValuePerAccount*-1 > (netLiquidationValue+(totalCashValuePerAccount*-1))*.40) else " "} |\n')
+        fRisk.write('-'*97)
 
         fRisk.write('</pre> </body> </html>')
         # columnDataRisk.append(accountName)
@@ -152,7 +152,7 @@ def parseAPICreateWebFiles(today):
         fRisk.close()
 
     grandTotalMarginCus = ((grandTotalExcessLiquidity/grandTotalNetLiquidationVal) * 100)
-    grandTotalMarginPer = (((grandTotalMarginBalance * -1)/grandTotalNetLiquidationVal) * 100)
+    grandTotalMarginPer = (((grandTotalMarginBalance * -1)/(grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))) * 100)
     
     grandTotalNetLiquidationValCol="green" if (grandTotalNetLiquidationVal >= 0) else "red"
     grandTotalMarginBalanceCol="red" if (grandTotalMarginBalance < 0) else "green"
@@ -169,14 +169,14 @@ def parseAPICreateWebFiles(today):
     f.write('\n')
     f.write(f'\nMargin Risk Chart: % Grand Total NLV (*current risk level <=)\n')
     f.write('</b>')
-    f.write('-'*81)
+    f.write('-'*97)
     f.write('\n')
-    f.write(f'| 20% <= | ${grandTotalNetLiquidationVal*.20:>15.2f} | Margin Call at {((grandTotalNetLiquidationVal-(grandTotalNetLiquidationVal*.20))/grandTotalNetLiquidationVal)*100:.2f}% Drop | {"Low Risk":<16s} | {"<b><font color=""green"">*</font></b>" if (grandTotalMarginBalance*-1 <= grandTotalNetLiquidationVal*.20) else " "} |\n')
-    f.write(f'| 30% <= | ${grandTotalNetLiquidationVal*.30:>15.2f} | Margin Call at {((grandTotalNetLiquidationVal-(grandTotalNetLiquidationVal*.30))/grandTotalNetLiquidationVal)*100:.2f}% Drop | {"Medium Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (grandTotalMarginBalance*-1 <= grandTotalNetLiquidationVal*.30) and (grandTotalMarginBalance*-1 > grandTotalNetLiquidationVal*.20) else " "} |\n')
-    f.write(f'| 35% <= | ${grandTotalNetLiquidationVal*.35:>15.2f} | Margin Call at {((grandTotalNetLiquidationVal-(grandTotalNetLiquidationVal*.35))/grandTotalNetLiquidationVal)*100:.2f}% Drop | {"Mediam High Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (grandTotalMarginBalance*-1 <= grandTotalNetLiquidationVal*.35) and (grandTotalMarginBalance*-1 > grandTotalNetLiquidationVal*.30) else " "} |\n')
-    f.write(f'| 40% <= | ${grandTotalNetLiquidationVal*.40:>15.2f} | Margin Call at {((grandTotalNetLiquidationVal-(grandTotalNetLiquidationVal*.40))/grandTotalNetLiquidationVal)*100:.2f}% Drop | {"High Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (grandTotalMarginBalance*-1 <= grandTotalNetLiquidationVal*.40) and (grandTotalMarginBalance*-1 > grandTotalNetLiquidationVal*.35) else " "} |\n')
-    f.write(f'| 50% >= | ${grandTotalNetLiquidationVal*.50:>15.2f} | Margin Call at {((grandTotalNetLiquidationVal-(grandTotalNetLiquidationVal*.50))/grandTotalNetLiquidationVal)*100:.2f}% Drop | {"Extreme Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (grandTotalMarginBalance*-1 > grandTotalNetLiquidationVal*.40) else " "} |\n')
-    f.write('-'*81)
+    f.write(f'| 20% <= | Margin Balance: ${(grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.20:>15.2f} | Margin Call at {((((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.20))-maintenanceMargin)/((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.20)))*100:.2f}% Drop | {"Low Risk":<16s} | {"<b><font color=""green"">*</font></b>" if (grandTotalMarginBalance*-1 <= (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.20) else " "} |\n')
+    f.write(f'| 30% <= | Margin Balance: ${(grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.30:>15.2f} | Margin Call at {((((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.30))-maintenanceMargin)/((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.30)))*100:.2f}% Drop | {"Medium Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (grandTotalMarginBalance*-1 <= (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.30) and (grandTotalMarginBalance*-1 > (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.20) else " "} |\n')
+    f.write(f'| 35% <= | Margin Balance: ${(grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.35:>15.2f} | Margin Call at {((((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.35))-maintenanceMargin)/((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.35)))*100:.2f}% Drop | {"Mediam High Risk":<16s} | {"<b><font color=""orange"">*</font></b>" if (grandTotalMarginBalance*-1 <= (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.35) and (grandTotalMarginBalance*-1 > (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.30) else " "} |\n')
+    f.write(f'| 40% <= | Margin Balance: ${(grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.40:>15.2f} | Margin Call at {((((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.40))-maintenanceMargin)/((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.40)))*100:.2f}% Drop | {"High Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (grandTotalMarginBalance*-1 <= (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.40) and (grandTotalMarginBalance*-1 > (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.35) else " "} |\n')
+    f.write(f'| 50% >= | Margin Balance: ${(grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.50:>15.2f} | Margin Call at {((((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.50))-maintenanceMargin)/((grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*(1-.50)))*100:.2f}% Drop | {"Extreme Risk":<16s} | {"<b><font color=""red"">*</font></b>" if (grandTotalMarginBalance*-1 > (grandTotalNetLiquidationVal+(grandTotalMarginBalance*-1))*.40) else " "} |\n')
+    f.write('-'*97)
     f.write('<br><br><hr>')
 
     wr.writerow(columnDataRisk)
