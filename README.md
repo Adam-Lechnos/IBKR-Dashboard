@@ -188,6 +188,6 @@ sudo systemctl enable ibkr-dashboard-1
 To start the service and check status immediately
 
 ```
-systemctl start ibkr-dashboard-1
-systemctl enable ibkr-dashboard-1
+sudo systemctl start ibkr-dashboard-1
+sudo systemctl enable ibkr-dashboard-1
 ```
