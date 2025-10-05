@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# entry point for starting the ibkr-dashboard
+gdrive_push_enabled="${1,,}"
+target_string_gdrive="nogdrive"
+
+# entry point and dependency check for starting the ibkr-dashboard
+
+echo "Performing dependency checks.."
 
 if [ ! -f ./env.list.ibeam ]; then
     echo "IBeam 'env.list.ibeam' environment file missing. Generate an encrypted password and key using 'gen_key_pw.py' then add to env.list.ibeam file."
@@ -38,21 +43,45 @@ if [ ! -f ./client_secrets.json ]; then
     exit 1
 fi
 
-python3 ./auth_gen_token.py
+if [ "$gdrive_push_enabled" != "$target_string_gdrive" ]; then
+	
+	python3 ./auth_gen_token.py
 
-if [ ! -f ./mycreds.txt ]; then
-    echo "Auth did not succeed, exting"
-    exit 1
-else
-    echo "Token file exists, proceeding"
+	if [ ! -f ./mycreds.txt ]; then
+    		echo "Auth did not succeed, exting"
+    		exit 1
+	else
+    		echo "Token file exists, proceeding"
+	fi
 fi
 
 if [ ! -f ./.htpasswd ]; then
     echo "nginx basic auth file does not exist, creating"
     read -p "Enter Username: " userName
-    htpasswd -c ./.htpasswd $userName
+    htpasswd -c /.htpasswd $userName
 else
     echo "basic auth file exists, proceeding"
 fi
 
-docker compose pull && docker compose up -d
+echo "PASSED"
+
+# stop all running docker container for IBKR
+
+echo "Stopping all running IBKR services.."                                                                             docker stop $(docker ps -q)
+
+echo "STOPPED"
+
+
+#start the containers depending on user argument
+
+if [ "$gdrive_push_enabled" == "$target_string_gdrive" ]; then
+	echo "Executing all services except GDrive Push service"
+	docker compose pull && docker compose up ibeam -d ibkr-create-website -d ibkr-dashboard-nginx -d
+else
+	echo "Executing all services.."
+	docker compose pull && docker compose up -d
+fi
+
+echo "IBKR Dashboard now running"
+
+exit 0
