@@ -147,3 +147,47 @@ The nginx config file provides customizable authentication settings, ports, TLS 
 
 # Google Cloud OAuth With Enabled APIs
 Enable Google Cloud OAuth flow by creating a project in Google Console, enabling the Google Drive APIs, then downloading the OAuth `client_secrets.json` for OAuth command authorization flow for container permissions to Google Drive.
+
+# Run Script
+Containers may be executed via call to docker compose via `./run.sh` within the working directory.
+* Adding the argument `nogdrive` will exclude the GDrive Push container and the dependnecy attempt for OAuth token generation.
+
+# Service File
+
+Example service file creation if the repo is located within the following working directory: `/home/opc/repos/IBKR-Dashboard`
+
+`touch ibkr-dashboard-1.service`
+
+Editing the service file via `vi': sudo vi /etc/systemd/system/ibkr-dashboard-1.service`
+
+```
+[Unit]
+Description=IBKR Dashboard 1
+After=network.target
+
+[Service]
+WorkingDirectory=/home/opc/repos/IBKR-Dashboard
+ExecStart=/bin/bash /home/opc/repos/IBKR-Dashboard/run.sh nogdrive
+Type=simple
+User=opc OPTIONAL
+
+[Install]
+WantedBy=multi-user.target
+```
+
+__Note:__ The `nogdrive` argument is present to prevent the interactive OAuth challenge. You may execute within the working directory the following script to force gdrive container start and OAuth challenge: `force_gdrive_push_reauth.sh`
+
+
+Execure the following command to create the symbolic links and enable for auto-start upon start-up/reboot, assuming the service file was named `ibkr-dashboard-1.service`
+
+```
+sudo systemctl daemon-reload
+sudo systemctl enable ibkr-dashboard-1
+```
+
+To start the service and check status immediately
+
+```
+systemctl start ibkr-dashboard-1
+systemctl enable ibkr-dashboard-1
+```
