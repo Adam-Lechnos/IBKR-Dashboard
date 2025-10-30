@@ -166,10 +166,10 @@ Description=IBKR Dashboard 1
 After=network.target
 
 [Service]
-WorkingDirectory=/home/opc/repos/IBKR-Dashboard2
-ExecStart=/bin/bash /home/opc/repos/IBKR-Dashboard2/run.sh nogdrive
+WorkingDirectory=/home/opc/repos/IBKR-Dashboard1
+ExecStart=/bin/bash /home/opc/repos/IBKR-Dashboard1/run.sh nogdrive
 RemainAfterExit=true
-ExecStop=/bin/bash /home/opc/repos/IBKR-Dashboard2/stop.sh
+ExecStop=/bin/bash /home/opc/repos/IBKR-Dashboard1/stop.sh
 Type=simple
 User=opc
 StandardOutput=journal
@@ -198,6 +198,8 @@ sudo systemctl enable ibkr-dashboard-1
 
 The healthcheck script, `healthCheck.sh` provides a last modifided check of the container's Index.html against the current shell's timestamp within the EST timezone for both. If more than 12 hours apart, the script will attempt to restart the service.
 
+* Edit the script, `healthCeheck.sh` and ensure the servicename matches within the `setServiceName` variable
+* Edit the script, `add-healthCheck-crontab.sh` and ensure the file path is accurate. i.e., `/home/opc/repos/IBKR-Dashboard1/healthCheck.sh`
 * Enter the crontab entry by executing `/home/opc/repos/IBKR-Dashboard1/add-healthCheck-crontab.sh`
 * The cronjob will execute every hour the `healthCheck.sh` script.
 * If the requisite shell command to grab the last modified date within the container fails, the script will attempt to restart the service.
