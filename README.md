@@ -196,8 +196,8 @@ sudo systemctl enable ibkr-dashboard-1
 ```
 # Service Health Check & Self-healing
 
-A healthcheck script is provided, `healthCheck.sh` provides a last modifided check of the container's Index.html against the current timestamp. If more than 12 hours apart, the script will attempt to restart the service.
+The healthcheck script, `healthCheck.sh` provides a last modifided check of the container's Index.html against the current shell's timestamp within the EST timezone for both. If more than 12 hours apart, the script will attempt to restart the service.
 
-* Enter the crontab entry by executing `/home/opc/repos/IBKR-Dashboard1\add-healthCheck-crontab.sh`
+* Enter the crontab entry by executing `/home/opc/repos/IBKR-Dashboard1/add-healthCheck-crontab.sh`
 * The cronjob will execute every hour the `healthCheck.sh` script.
-* If the script is enable to run the requisite shell command to grab the last modified date, the script will attempt to restart the service.
+* If the requisite shell command to grab the last modified date within the container fails, the script will attempt to restart the service.
