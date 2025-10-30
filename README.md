@@ -198,8 +198,10 @@ sudo systemctl enable ibkr-dashboard-1
 
 The healthcheck script, `healthCheck.sh` provides a last modifided check of the container's Index.html against the current shell's timestamp within the EST timezone for both. If more than 12 hours apart, the script will attempt to restart the service.
 
-* Edit the script, `healthCeheck.sh` and ensure the servicename matches within the `setServiceName` variable
-* Edit the script, `add-healthCheck-crontab.sh` and ensure the file path is accurate. i.e., `/home/opc/repos/IBKR-Dashboard1/healthCheck.sh`
+* Edit the script, `healthCeheck.sh` and ensure the servicename matches within the `setServiceName` variable. i.e., "ibkr-dashboard-1"
+  * For example if the service name is "ibkr-dashboard2": `sed -i 's|ibkr-dashboard1|ibkr-dashboard2|g' /home/opc/repos/IBKR-Dashboard2/add-healthCheck-crontab.sh`
+* Edit the script, `add-healthCheck-crontab.sh` and ensure the `SCRIPT_PATH` variable is accurate. i.e., `/home/opc/repos/IBKR-Dashboard1/healthCheck.sh
+  * For example if the path is "/home/opc/repos/IBKR-Dashboard2/healthCheck.sh": `sed -i 's|/home/opc/repos/IBKR-Dashboard1/healthCheck.sh|/home/opc/repos/IBKR-Dashboard2/healthCheck.sh|g' /home/opc/repos/IBKR-Dashboard2/add-healthCheck-crontab.sh`
 * Enter the crontab entry by executing `/home/opc/repos/IBKR-Dashboard1/add-healthCheck-crontab.sh`
 * The cronjob will execute every hour the `healthCheck.sh` script.
 * If the requisite shell command to grab the last modified date within the container fails, the script will attempt to restart the service.
