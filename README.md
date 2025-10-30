@@ -166,10 +166,13 @@ Description=IBKR Dashboard 1
 After=network.target
 
 [Service]
-WorkingDirectory=/home/opc/repos/IBKR-Dashboard
-ExecStart=/bin/bash /home/opc/repos/IBKR-Dashboard/run.sh nogdrive
+WorkingDirectory=/home/opc/repos/IBKR-Dashboard2
+ExecStart=/bin/bash /home/opc/repos/IBKR-Dashboard2/run.sh nogdrive
+RemainAfterExit=true
+ExecStop=/bin/bash /home/opc/repos/IBKR-Dashboard2/stop.sh
 Type=simple
-User=opc OPTIONAL
+User=opc
+StandardOutput=journal
 
 [Install]
 WantedBy=multi-user.target
