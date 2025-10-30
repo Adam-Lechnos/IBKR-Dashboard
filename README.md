@@ -158,7 +158,7 @@ Example service file creation if the repo is located within the following workin
 
 `touch ibkr-dashboard-1.service`
 
-Editing the service file via `vi': sudo vi /etc/systemd/system/ibkr-dashboard-1.service`
+Editing the service file via `sudo vi /etc/systemd/system/ibkr-dashboard-1.service`
 
 ```
 [Unit]
